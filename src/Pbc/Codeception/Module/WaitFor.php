@@ -1,12 +1,13 @@
 <?php
 
 Namespace Pbc\Codeception\Module;
+use \Codeception\Module as CodeceptionModule;
 
 /**
  * Class WaitFor
  * @package Pbc\Codeception\Module
  */
-class WaitFor extends \Codeception\Module\CodeceptionModule
+class WaitFor extends CodeceptionModule
 {
 
     /**
