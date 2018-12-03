@@ -48,6 +48,17 @@ class WordPressHelper extends CodeceptionModule
     }
 
     /**
+     * Logout of WordPress backend
+     * @param \AcceptanceTester|\FunctionalTester   $I
+     * @param string                                $loginPath      The login path (usually /wp-login.php)
+     */
+    public function logOutOfWpAdmin($I, $loginPath = "/wp-login.php")
+    {
+        $I->amOnPage($loginPath . '?loggedout=true');
+        $I->waitForText('You are now logged out.');
+    }
+
+    /**
      * @param \AcceptanceTester|\FunctionalTester   $I
      * @param string                                $user   Username to login with
      * @param string                                $pass   Password to login with
