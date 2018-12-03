@@ -77,16 +77,24 @@ class WordPressHelper extends CodeceptionModule
 
     /**
      * @param \AcceptanceTester|\FunctionalTester   $I
-     * @param string                                $file       Name of the file to be uploaded in the test/_data folder
+     * @param string                                $filePath   Path to an image file in /tests/_data folder
      * @param string                                $adminPath  Path to the admin backend (usually /wp-admin)
      * @return array
      */
-    public function createAnAttachment($I, $file, $adminPath='/wp-admin') {
+    public function createAnAttachment($I, $filePath, $adminPath='/wp-admin') {
+
+        // Get the file path, the file should be in the test/_data directory
+        $parts = explode(DIRECTORY_SEPARATOR, $filePath);
+        $file = array_pop($parts);
+        $path = implode(DIRECTORY_SEPARATOR, $parts);
+
+        // Make a new file name for the file that we'll work with
         $fileNameParts = explode('.', $file);
         $newFileName = substr(md5(time()), 0, 10) . '.' . end($fileNameParts);
         $newFileNameParts = explode('.', $newFileName);
-        // create a copy of the file with a unique file name
-        copy(dirname(__FILE__, 3) . '/_data/'. $file, dirname(__FILE__, 3) . '/_data/'. $newFileName);
+
+        // Create a copy of the file with a unique file name
+        copy($path . DIRECTORY_SEPARATOR . $file, $path . DIRECTORY_SEPARATOR . $newFileName);
 
         $I->amOnPage($adminPath . '/media-new.php?browser-uploader');
         $I->attachFile(['id' => 'async-upload'], $newFileName);
@@ -97,8 +105,7 @@ class WordPressHelper extends CodeceptionModule
             'attachment_url' => $I->grabValueFrom(['id' => 'attachment_url'])
         ];
     }
-
-
+    
     /**
      * @param \AcceptanceTester|\FunctionalTester   $I
      * @param string|array|null                     $title      Either the post title or an array of the attributes to use on the post
