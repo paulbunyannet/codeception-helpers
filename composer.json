@@ -21,5 +21,10 @@
       "Pbc\\": "src/Pbc/"
     }
   },
-  "minimum-stability": "stable"
+  "minimum-stability": "stable",
+  "suggest": {
+    "brandonwamboldt/utilphp" : "A collection of useful functions and snippets that you need or could use every day, designed to avoid conflicts with existing projects",
+    "paulbunyannet/bandolier" : "Reusable utilities",
+    "fzaninotto/faker"        : "Faker is a PHP library that generates fake data for you."
+  }
 }
