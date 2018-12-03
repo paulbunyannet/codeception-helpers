@@ -51,6 +51,7 @@ class WordPressHelper extends CodeceptionModule
      * Logout of WordPress backend
      * @param \AcceptanceTester|\FunctionalTester   $I
      * @param string                                $loginPath      The login path (usually /wp-login.php)
+     * @throws \Exception
      */
     public function logOutOfWpAdmin($I, $loginPath = "/wp-login.php")
     {
@@ -62,6 +63,7 @@ class WordPressHelper extends CodeceptionModule
      * @param \AcceptanceTester|\FunctionalTester   $I
      * @param string                                $user   Username to login with
      * @param string                                $pass   Password to login with
+     * @throws \Exception
      */
     private function fillLoginAndWaitForDashboard($I, $user = "admin", $pass = "password")
     {
@@ -102,6 +104,7 @@ class WordPressHelper extends CodeceptionModule
      * @param string|array|null                     $title      Either the post title or an array of the attributes to use on the post
      * @param string|null                           $content    Body content of the page (if not in the $title variable)
      * @param string                                $adminPath  Path to the admin backend (usually /wp-admin)
+     * @throws \Exception
      */
     public function createAPost($I, $title = null, $content = null, $adminPath='/wp-admin')
     {
