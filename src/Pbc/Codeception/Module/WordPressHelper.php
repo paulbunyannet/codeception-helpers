@@ -1,5 +1,5 @@
 <?php
-namespace Codeception\Module;
+Namespace Pbc\Codeception\Module;
 
 use Codeception\Module as CodeceptionModule;
 use Pbc\Bandolier\Type\Arrays as BandolierArrays;
