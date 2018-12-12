@@ -32,6 +32,22 @@ class WordPressHelper extends CodeceptionModule
         $pass = "password",
         $maxAttempts = 3
     ) {
+        if (defined('WP_LOGIN_PATH')) {
+            $loginPath = WP_LOGIN_PATH;
+        }
+
+        if (defined('WP_LOGIN_USER')) {
+            $user = WP_LOGIN_USER;
+        }
+
+        if (defined('WP_LOGIN_PASSWORD')) {
+            $pass = WP_LOGIN_PASSWORD;
+        }
+
+        if (defined('WP_LOGIN_MAX_ATTEMPTS')) {
+            $maxAttempts = intval(WP_LOGIN_MAX_ATTEMPTS);
+        }
+
         for ($i = 0; $i <= $maxAttempts; $i++) {
             try {
                 $I->amOnPage($loginPath);
@@ -55,6 +71,10 @@ class WordPressHelper extends CodeceptionModule
      */
     public function logOutOfWpAdmin($I, $loginPath = "/wp-login.php")
     {
+        if (defined('WP_LOGIN_PATH')) {
+            $loginPath = WP_LOGIN_PATH;
+        }
+
         $I->amOnPage($loginPath . '?loggedout=true');
         $I->waitForText('You are now logged out.');
     }
@@ -82,6 +102,10 @@ class WordPressHelper extends CodeceptionModule
      * @return array
      */
     public function createAnAttachment($I, $filePath, $adminPath='/wp-admin') {
+
+        if (defined('WP_ADMIN_PATH')) {
+            $adminPath = WP_ADMIN_PATH;
+        }
 
         // Get the file path, the file should be in the test/_data directory
         $parts = explode(DIRECTORY_SEPARATOR, $filePath);
@@ -115,6 +139,10 @@ class WordPressHelper extends CodeceptionModule
      */
     public function createAPost($I, $title = null, $content = null, $adminPath='/wp-admin')
     {
+
+        if (defined('WP_ADMIN_PATH')) {
+            $adminPath = WP_ADMIN_PATH;
+        }
 
         $faker = \Faker\Factory::create();
         if (is_array($title)) {
