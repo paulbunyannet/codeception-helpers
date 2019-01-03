@@ -211,7 +211,9 @@ class WordPressHelper extends CodeceptionModule
         }
 
         $I->wait(5);
+        $I->executeJS('window.scrollTo(0,0);');
         $I->scrollTo(['id' => 'submitpost']);
+        $I->wait(5);
         $I->click(['id' => 'publish']);
         $I->waitForText('Post published', self::TEXT_WAIT_TIMEOUT);
         $I->see('Post published');
