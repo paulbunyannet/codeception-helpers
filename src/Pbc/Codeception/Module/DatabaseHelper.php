@@ -13,10 +13,11 @@
  * @link       https://github.com/paulbunyannet/codeception-helpers
  */
 
-namespace Codeception\Module;
+Namespace Pbc\Codeception\Module;
 
-use Codeception\Actor;
-use Codeception\Exception\ModuleException;
+use \Codeception\Actor;
+use \Codeception\Module as CodeceptionModule;
+use \Codeception\Exception\ModuleException;
 
 /**
  * DatabaseHelper
@@ -29,7 +30,7 @@ use Codeception\Exception\ModuleException;
  * @license    http://www.php.net/license/3_01.txt  PHP License 3.01
  * @link       https://github.com/paulbunyannet/codeception-helpers
  */
-class DatabaseHelper extends Module
+class DatabaseHelper extends CodeceptionModule
 {
     protected static $connection;
 
