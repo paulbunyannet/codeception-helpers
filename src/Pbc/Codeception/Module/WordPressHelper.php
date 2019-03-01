@@ -207,7 +207,7 @@ class WordPressHelper extends CodeceptionModule
             //$I->click(['aria-label' => $featured_image]);
             $I->executeJS('$(\'li[aria-label="'. $featured_image .'"]\').click()');
             $I->click('#__wp-uploader-id-2 .media-button');
-            $I->waitForElementVisible(['id' => 'set-post-thumbnail'], self::TEXT_WAIT_TIMEOUT);
+            $I->waitForElementVisible(['id' => 'remove-post-thumbnail'], self::TEXT_WAIT_TIMEOUT);
         }
 
         $I->wait(5);
