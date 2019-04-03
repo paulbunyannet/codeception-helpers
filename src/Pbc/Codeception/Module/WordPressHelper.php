@@ -137,7 +137,7 @@ class WordPressHelper extends CodeceptionModule
      * @param string                                $adminPath  Path to the admin backend (usually /wp-admin)
      * @throws \Exception
      */
-    public function createAPost($I, $title = null, $content = null, $adminPath='/wp-admin')
+    public function createAPostCLI($I, $title = null, $content = null, $adminPath='/wp-admin')
     {
         $faker = \Faker\Factory::create();
         if (is_array($title)) {
@@ -163,9 +163,99 @@ class WordPressHelper extends CodeceptionModule
             $wpCommand .= " --meta_input='" . json_encode($meta) . "'";
         }
         $I->runShellCommand($wpCommand);
-        // Save ID for featured image purposes
-        // TODO: Make featured images work
         $postID = trim($this->getModule('Cli')->output);
+        if (isset($featured_image) && is_string($featured_image) && $postID) {
+            $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' media import tests/_data/'. $featured_image . ' --porcelain --featured-image --post_id=' . $postID;
+        }
         $I->amOnPage("/$slug/");
+        return $postID;
+    }
+
+    /**
+     * @param \AcceptanceTester|\FunctionalTester   $I
+     * @param string|array|null                     $title      Either the post title or an array of the attributes to use on the post
+     * @param string|null                           $content    Body content of the page (if not in the $title variable)
+     * @param string                                $adminPath  Path to the admin backend (usually /wp-admin)
+     * @throws \Exception
+     */
+    public function createAPost($I, $title = null, $content = null, $adminPath='/wp-admin')
+    {
+
+        if (defined('WP_ADMIN_PATH')) {
+            $adminPath = WP_ADMIN_PATH;
+        }
+
+        $faker = \Faker\Factory::create();
+        if (is_array($title)) {
+            extract(BandolierArrays::defaultAttributes([
+                    'title' => $faker->sentence(),
+                    'content' => $faker->paragraph(),
+                    'meta' => [],
+                    'featured_image' => null,
+                    'customFields' => []
+                ]
+                , $title)
+            );
+        }
+
+        $I->amOnPage($adminPath . '/post-new.php');
+        // show the settings dialog link
+        $I->waitForElementVisible(['id' => 'show-settings-link']);
+        $I->click(['id' => 'show-settings-link']);
+
+        $I->scrollTo(['id' => 'title']);
+        $I->fillField(['id' => 'title'], $title);
+        $exist = Utilities::str_to_bool($I->executeJS("return !!document.getElementById('content-html')"));
+        if ($exist) {
+            $I->click(['id' => 'content-html']);
+        }
+        $I->click(['id' => 'content']);
+        $I->fillField(['id' => 'content'], $content);
+
+        // run though the meta field and set any extra fields that is contains
+        if (isset($meta) && count($meta) > 0) {
+            $I->scrollTo(['id' => 'screen-options-wrap']);
+            for($i=0, $iCount=count($meta); $i < $iCount; $i++) {
+                $I->{$meta[$i][0]}($meta[$i][1],$meta[$i][2]);
+            }
+        }
+        // run though the custom fields. since there's no good way to know what
+        // the name/id of the input is they will be looked up via the value
+        if (isset($customFields) && count($customFields) > 0) {
+            $I->scrollTo('#postcustom');
+            for($i=0, $iCount=count($customFields); $i < $iCount; $i++) {
+                try {
+                    // try and fill an existing custom field
+                    $I->fillField('#' . str_replace('key', 'value',
+                            $I->executeJS('return document.querySelectorAll(\'input[value="' . $customFields[$i][0] . '"]\')[0].id;')),
+                        $customFields[$i][1]);
+                } catch (\Exception $ex) {
+                    // make a new one if the above threw an exception
+                    $I->click(['id' => 'enternew']);
+                    $I->fillField(['id' =>'metakeyinput'], $customFields[$i][0]);
+                    $I->fillField(['id' =>'metavalue'], $customFields[$i][1]);
+                    $I->click(['id' => 'newmeta-submit']);
+                }
+            }
+        }
+
+        // add featured image if it's set
+        if (isset($featured_image) && is_string($featured_image)) {
+            $I->click('Set featured image');
+
+            //$I->click(['aria-label' => $featured_image]);
+            $I->executeJS('$(\'li[aria-label="'. $featured_image .'"]\').click()');
+            $I->click('#__wp-uploader-id-2 .media-button');
+            $I->waitForElementVisible(['id' => 'remove-post-thumbnail'], self::TEXT_WAIT_TIMEOUT);
+        }
+
+        $I->executeJS('window.scrollTo(0,0);');
+        $I->scrollTo(['id' => 'submitpost']);
+
+        $I->click(['id' => 'publish']);
+        $I->waitForText('Post published', self::TEXT_WAIT_TIMEOUT);
+        $I->see('Post published');
+        $path = $I->executeJS('return document.querySelector("#sample-permalink > a").getAttribute("href")');
+        $I->amOnPage(parse_url($path, PHP_URL_PATH));
     }
 }
