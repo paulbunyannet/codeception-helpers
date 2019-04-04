@@ -165,7 +165,8 @@ class WordPressHelper extends CodeceptionModule
         $I->runShellCommand($wpCommand);
         $postID = trim($this->getModule('Cli')->output);
         if (isset($featured_image) && is_string($featured_image) && $postID) {
-            $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' media import tests/_data/'. $featured_image . ' --porcelain --featured-image --post_id=' . $postID;
+            $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' media import tests/_data/'. $featured_image . ' --porcelain --featured_image --post_id=' . $postID;
+            $I->runShellCommand($wpCommand);
         }
         $I->amOnPage("/$slug/");
         return $postID;
