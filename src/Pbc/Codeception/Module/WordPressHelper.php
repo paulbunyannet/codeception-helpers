@@ -137,6 +137,47 @@ class WordPressHelper extends CodeceptionModule
      * @param string                                $adminPath  Path to the admin backend (usually /wp-admin)
      * @throws \Exception
      */
+    public function createAPostCLI($I, $title = null, $content = null, $adminPath='/wp-admin')
+    {
+        $faker = \Faker\Factory::create();
+        if (is_array($title)) {
+            extract(BandolierArrays::defaultAttributes([
+                    'title' => $faker->sentence(),
+                    'content' => $faker->paragraph(),
+                    'meta' => [],
+                    'featured_image' => null,
+                    'customFields' => []
+                ]
+                , $title)
+            );
+        }
+
+        $wpPath = getcwd() . "/public_html/wp";
+        $slug = \Cocur\Slugify\Slugify::create()->slugify($title);
+        $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' post create --porcelain --post_status=publish --post_name='. $slug . ' --post_title="' . $title . '" --post_content=\'' . str_replace("'", "\'", $content) . '\'';
+        if (isset($customFields) && count($customFields) > 0) {
+            $meta = [];
+            for ($i=0, $iCount=count($customFields); $i < $iCount; $i++) {
+                    $meta[$customFields[$i][0]] = $customFields[$i][1];
+            }
+            $wpCommand .= " --meta_input='" . json_encode($meta) . "'";
+        }
+        $I->runShellCommand($wpCommand);
+        $postID = trim($this->getModule('Cli')->output);
+        if (isset($featured_image) && is_string($featured_image) && $postID) {
+            $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' media import tests/_data/'. $featured_image . ' --porcelain --featured-image --post_id=' . $postID;
+        }
+        $I->amOnPage("/$slug/");
+        return $postID;
+    }
+
+    /**
+     * @param \AcceptanceTester|\FunctionalTester   $I
+     * @param string|array|null                     $title      Either the post title or an array of the attributes to use on the post
+     * @param string|null                           $content    Body content of the page (if not in the $title variable)
+     * @param string                                $adminPath  Path to the admin backend (usually /wp-admin)
+     * @throws \Exception
+     */
     public function createAPost($I, $title = null, $content = null, $adminPath='/wp-admin')
     {
 
@@ -167,7 +208,6 @@ class WordPressHelper extends CodeceptionModule
         $exist = Utilities::str_to_bool($I->executeJS("return !!document.getElementById('content-html')"));
         if ($exist) {
             $I->click(['id' => 'content-html']);
-            $I->wait(5);
         }
         $I->click(['id' => 'content']);
         $I->fillField(['id' => 'content'], $content);
@@ -195,7 +235,6 @@ class WordPressHelper extends CodeceptionModule
                     $I->fillField(['id' =>'metakeyinput'], $customFields[$i][0]);
                     $I->fillField(['id' =>'metavalue'], $customFields[$i][1]);
                     $I->click(['id' => 'newmeta-submit']);
-
                 }
             }
         }
@@ -203,17 +242,16 @@ class WordPressHelper extends CodeceptionModule
         // add featured image if it's set
         if (isset($featured_image) && is_string($featured_image)) {
             $I->click('Set featured image');
-            $I->wait(5);
+
             //$I->click(['aria-label' => $featured_image]);
             $I->executeJS('$(\'li[aria-label="'. $featured_image .'"]\').click()');
             $I->click('#__wp-uploader-id-2 .media-button');
             $I->waitForElementVisible(['id' => 'remove-post-thumbnail'], self::TEXT_WAIT_TIMEOUT);
         }
 
-        $I->wait(5);
         $I->executeJS('window.scrollTo(0,0);');
         $I->scrollTo(['id' => 'submitpost']);
-        $I->wait(5);
+
         $I->click(['id' => 'publish']);
         $I->waitForText('Post published', self::TEXT_WAIT_TIMEOUT);
         $I->see('Post published');
