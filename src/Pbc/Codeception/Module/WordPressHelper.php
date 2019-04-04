@@ -244,8 +244,7 @@ class WordPressHelper extends CodeceptionModule
         if (isset($featured_image) && is_string($featured_image)) {
             $I->click('Set featured image');
 
-            //$I->click(['aria-label' => $featured_image]);
-            $I->executeJS('$(\'li[aria-label="'. $featured_image .'"]\').click()');
+            $I->click('//*[@id="__attachments-view-45"]/li[@aria-label="'.$featured_image.'"]');
             $I->click('#__wp-uploader-id-2 .media-button');
             $I->waitForElementVisible(['id' => 'remove-post-thumbnail'], self::TEXT_WAIT_TIMEOUT);
         }
