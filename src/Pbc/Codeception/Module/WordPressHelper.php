@@ -144,9 +144,9 @@ class WordPressHelper extends CodeceptionModule
             extract(BandolierArrays::defaultAttributes([
                     'title' => $faker->sentence(),
                     'content' => $faker->paragraph(),
-                    'meta' => [],
+                    'options' => [],
                     'featured_image' => null,
-                    'customFields' => []
+                    'meta' => []
                 ]
                 , $title)
             );
@@ -155,17 +155,23 @@ class WordPressHelper extends CodeceptionModule
         $wpPath = getcwd() . "/public_html/wp";
         $slug = \Cocur\Slugify\Slugify::create()->slugify($title);
         $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' post create --porcelain --post_status=publish --post_name='. $slug . ' --post_title="' . $title . '" --post_content=\'' . str_replace("'", "\'", $content) . '\'';
-        if (isset($customFields) && count($customFields) > 0) {
-            $meta = [];
-            for ($i=0, $iCount=count($customFields); $i < $iCount; $i++) {
-                    $meta[$customFields[$i][0]] = $customFields[$i][1];
+        if (isset($meta) && count($meta) > 0) {
+            $meta_data = [];
+            for ($i=0, $iCount=count($meta); $i < $iCount; $i++) {
+                $meta_data[$meta[$i][0]] = $meta[$i][1];
             }
-            $wpCommand .= " --meta_input='" . json_encode($meta) . "'";
+            $wpCommand .= " --meta_input='" . json_encode($meta_data) . "'";
+        }
+        if (isset($options) && count($options) > 0) {
+            for ($i=0;$i < count($options); $i++) {
+                $wpCommand .= " ".$options[$i][0]."=".$options[$i][1];
+            }
         }
         $I->runShellCommand($wpCommand);
         $postID = trim($this->getModule('Cli')->output);
         if (isset($featured_image) && is_string($featured_image) && $postID) {
-            $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' media import tests/_data/'. $featured_image . ' --porcelain --featured-image --post_id=' . $postID;
+            $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' media import tests/_data/'. $featured_image . ' --porcelain --featured_image --post_id=' . $postID;
+            $I->runShellCommand($wpCommand);
         }
         $I->amOnPage("/$slug/");
         return $postID;
@@ -243,8 +249,7 @@ class WordPressHelper extends CodeceptionModule
         if (isset($featured_image) && is_string($featured_image)) {
             $I->click('Set featured image');
 
-            //$I->click(['aria-label' => $featured_image]);
-            $I->executeJS('$(\'li[aria-label="'. $featured_image .'"]\').click()');
+            $I->click('//*[@id="__attachments-view-45"]/li[@aria-label="'.$featured_image.'"]');
             $I->click('#__wp-uploader-id-2 .media-button');
             $I->waitForElementVisible(['id' => 'remove-post-thumbnail'], self::TEXT_WAIT_TIMEOUT);
         }
