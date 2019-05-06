@@ -1,5 +1,5 @@
 <?php
-Namespace Pbc\Codeception\Module;
+namespace Pbc\Codeception\Module;
 
 use Codeception\Module as CodeceptionModule;
 use Pbc\Bandolier\Type\Arrays as BandolierArrays;
@@ -129,7 +129,7 @@ class WordPressHelper extends CodeceptionModule
             'attachment_url' => $I->grabValueFrom(['id' => 'attachment_url'])
         ];
     }
-    
+
     /**
      * @param \AcceptanceTester|\FunctionalTester   $I
      * @param string|array|null                     $title      Either the post title or an array of the attributes to use on the post
