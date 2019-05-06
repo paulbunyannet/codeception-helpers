@@ -12,10 +12,10 @@ class ValidationHelper extends CodeceptionModule
   /**
    * Validate page HTML
    * @see https://github.com/validator/validator/wiki/Service-%C2%BB-Input-%C2%BB-POST-body
-   * @param AcceptanceTester $I
-   * @param string           $from String used for naming screenshots and source files
+   * @param \AcceptanceTester $I
+   * @param string            $from String used for naming screenshots and source files
    */
-  public function validateHtml(AcceptanceTester $I, $from)
+  public function validateHtml($I, $from)
   {
       $I->makeScreenshot($from);
       $source = $I->grabPageSource();
