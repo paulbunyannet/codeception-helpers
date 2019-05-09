@@ -37,7 +37,7 @@ class ValidationHelper extends CodeceptionModule
             $I->fail((new Colors())->getColoredString(
                 $I->grabFromCurrentUrl() . PHP_EOL .
                 ucfirst($result->messages[0]->type) . ' on line ' . $filePath . PHP_EOL .
-                (string)$result->messages[0]->lastLine . ': ' . $result->messages[0]->message . '(' . $result->messages[0]->extract . ')', 'white', 'red')
+                (string)$result->messages[0]->lastLine . ': ' . $result->messages[0]->message . '(' . $result->messages[0]->extract . ')', 'red')
             );
         }
     }
