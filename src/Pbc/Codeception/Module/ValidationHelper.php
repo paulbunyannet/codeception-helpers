@@ -1,6 +1,7 @@
 <?php
 namespace Pbc\Codeception\Module;
 use Codeception\Module as CodeceptionModule;
+use Pbc\Codeception\Helpers\Colors;
 
 /**
  * Class WaitFor
@@ -33,7 +34,11 @@ class ValidationHelper extends CodeceptionModule
         $result = json_decode(file_get_contents($outputFilePath));
         codecept_debug($result);
         if (property_exists($result, 'messages') && count($result->messages) > 0) {
-            $I->fail($I->grabFromCurrentUrl() . PHP_EOL . ucfirst($result->messages[0]->type) . ' on line ' . $filePath . PHP_EOL . (string)$result->messages[0]->lastLine . ': ' . $result->messages[0]->message . '(' . $result->messages[0]->extract . ')');
+            $I->fail((new Colors())->getColoredString(
+                $I->grabFromCurrentUrl() . PHP_EOL .
+                ucfirst($result->messages[0]->type) . ' on line ' . $filePath . PHP_EOL .
+                (string)$result->messages[0]->lastLine . ': ' . $result->messages[0]->message . '(' . $result->messages[0]->extract . ')', 'white', 'red')
+            );
         }
     }
 }
