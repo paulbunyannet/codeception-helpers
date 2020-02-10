@@ -9,7 +9,11 @@
     }
   ],
   "require": {
-    "php": ">=5.6.0"
+    "php": ">=5.6.0",
+    "cocur/slugify": "^4.0",
+    "brandonwamboldt/utilphp": "^1.1",
+    "paulbunyannet/bandolier": "^1.7",
+    "fzaninotto/faker": "^1.9"
 
   },
   "require-dev": {
@@ -22,10 +26,5 @@
       "Pbc\\": "src/Pbc/"
     }
   },
-  "minimum-stability": "stable",
-  "suggest": {
-    "brandonwamboldt/utilphp" : "A collection of useful functions and snippets that you need or could use every day, designed to avoid conflicts with existing projects",
-    "paulbunyannet/bandolier" : "Reusable utilities",
-    "fzaninotto/faker"        : "Faker is a PHP library that generates fake data for you."
-  }
+  "minimum-stability": "stable"
 }
