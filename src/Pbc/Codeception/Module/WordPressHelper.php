@@ -1,7 +1,9 @@
 <?php
 namespace Pbc\Codeception\Module;
 
+use Cocur\Slugify\Slugify;
 use Codeception\Module as CodeceptionModule;
+use Faker\Factory;
 use Pbc\Bandolier\Type\Arrays as BandolierArrays;
 use utilphp\util as Utilities;
 
@@ -139,7 +141,7 @@ class WordPressHelper extends CodeceptionModule
      */
     public function createAPostCLI($I, $title = null, $content = null, $adminPath='/wp-admin')
     {
-        $faker = \Faker\Factory::create();
+        $faker = Factory::create();
         if (is_array($title)) {
             extract(BandolierArrays::defaultAttributes([
                     'title' => $faker->sentence(),
@@ -153,7 +155,7 @@ class WordPressHelper extends CodeceptionModule
         }
 
         $wpPath = getcwd() . "/public_html/wp";
-        $slug = \Cocur\Slugify\Slugify::create()->slugify($title);
+        $slug = Slugify::create()->slugify($title);
         $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' post create --porcelain --post_status=publish --post_name='. $slug . ' --post_title="' . $title . '" --post_content=\'' . str_replace("'", "\'", $content) . '\'';
         if (isset($meta) && count($meta) > 0) {
             $meta_data = [];
@@ -191,7 +193,7 @@ class WordPressHelper extends CodeceptionModule
             $adminPath = WP_ADMIN_PATH;
         }
 
-        $faker = \Faker\Factory::create();
+        $faker = Factory::create();
         if (is_array($title)) {
             extract(BandolierArrays::defaultAttributes([
                     'title' => $faker->sentence(),
