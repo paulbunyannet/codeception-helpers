@@ -13,7 +13,7 @@
  * @link       https://github.com/paulbunyannet/codeception-helpers
  */
 
-Namespace Pbc\Codeception\Module;
+namespace Pbc\Codeception\Module;
 
 use \Codeception\Actor;
 use \Codeception\Module as CodeceptionModule;

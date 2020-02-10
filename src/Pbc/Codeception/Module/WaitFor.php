@@ -1,6 +1,5 @@
 <?php
-
-Namespace Pbc\Codeception\Module;
+namespace Pbc\Codeception\Module;
 use \Codeception\Module as CodeceptionModule;
 
 /**
