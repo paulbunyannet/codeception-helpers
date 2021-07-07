@@ -61,6 +61,12 @@ class WordPressHelper extends CodeceptionModule
                     $I->fail("{$i} login attempts were made.");
                 }
                 continue;
+                //this should run after the failed try in case that wp asks to verify email.
+                try {
+                    $I->dontSee("Administration email verification");
+                } catch (\Exception $e) {
+                    $I->click('The email is correct');
+                }
             }
         }
     }
