@@ -54,22 +54,16 @@ class WordPressHelper extends CodeceptionModule
             try {
                 $I->amOnPage($loginPath);
                 $this->fillLoginAndWaitForDashboard($I, $user, $pass);
+                if(((int) $I->executeJS("var element = document.getElementById('correct-admin-email'); if(typeof(element) != 'undefined' && element != null){ return 1; } return 0;")) === 1){
+                    $I->click("#correct-admin-email");
+                }
                 $I->waitForText('Dashboard', self::TEXT_WAIT_TIMEOUT);
                 return;
             } catch (\Exception $e) {
                 if ($i === $maxAttempts) {
                     $I->fail("{$i} login attempts were made.");
                 }
-                if(((int) $I->executeJS("var element = document.getElementById('correct-admin-email'); if(typeof(element) != 'undefined' && element != null){ return 1; } return 0;")) === 1){
-                    $I->click("#correct-admin-email");
-                }
                 continue;
-                //this should run after the failed try in case that wp asks to verify email.
-                try {
-                    $I->dontSee("Administration email verification");
-                } catch (\Exception $e) {
-                    $I->click('The email is correct');
-                }
             }
         }
     }
