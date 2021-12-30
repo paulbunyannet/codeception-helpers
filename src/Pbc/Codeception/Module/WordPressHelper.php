@@ -64,12 +64,6 @@ class WordPressHelper extends CodeceptionModule
                     $I->click("#correct-admin-email");
                 }
                 continue;
-                //this should run after the failed try in case that wp asks to verify email.
-                try {
-                    $I->dontSee("Administration email verification");
-                } catch (\Exception $e) {
-                    $I->click('The email is correct');
-                }
             }
         }
     }
