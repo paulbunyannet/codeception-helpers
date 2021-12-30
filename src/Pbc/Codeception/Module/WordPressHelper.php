@@ -60,6 +60,9 @@ class WordPressHelper extends CodeceptionModule
                 if ($i === $maxAttempts) {
                     $I->fail("{$i} login attempts were made.");
                 }
+                if(((int) $I->executeJS("var element = document.getElementById('correct-admin-email'); if(typeof(element) != 'undefined' && element != null){ return 1; } return 0;")) === 1){
+                    $I->click("#correct-admin-email");
+                }
                 continue;
             }
         }
