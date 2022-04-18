@@ -102,7 +102,7 @@ class WordPressHelper extends CodeceptionModule
 
     /**
      * @param \AcceptanceTester|\FunctionalTester   $I
-     * @param string                                $filePath   Path to an image file in /tests/_data folder
+     * @param string                                $filePath   Path to an image file in /tests/Support/Data folder
      * @param string                                $adminPath  Path to the admin backend (usually /wp-admin)
      * @return array
      */
@@ -175,7 +175,7 @@ class WordPressHelper extends CodeceptionModule
         $I->runShellCommand($wpCommand);
         $postID = trim($this->getModule('Cli')->output);
         if (isset($featured_image) && is_string($featured_image) && $postID) {
-            $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' media import tests/_data/'. $featured_image . ' --porcelain --featured_image --post_id=' . $postID;
+            $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' media import tests/Support/Data/'. $featured_image . ' --porcelain --featured_image --post_id=' . $postID;
             $I->runShellCommand($wpCommand);
             $attachmentId = trim($this->getModule('Cli')->output);
         }

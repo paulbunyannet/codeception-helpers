@@ -52,7 +52,7 @@ class TxpHelper extends Module
      *  // array with overrides for
      *  // default keys if necessary
      *  // * thefile: The name of the file to upload. This file
-     *                should be a file in the `tests/_data` folder.
+     *                should be a file in the `tests/Support/Data` folder.
      *  // See https://docs.textpattern.com/administration/images-panel for more info
      *  $I->uploadAnImageInTxp($I, ['thefile' => 'custom-upload-file.jpeg']);
      *
@@ -65,7 +65,7 @@ class TxpHelper extends Module
     {
         $params = Arrays::defaultAttributes(
             [
-                // the file name in tests/_data
+                // the file name in tests/Support/Data
                 self::KEY_THEFILE => "one.png"
             ],
             $data
