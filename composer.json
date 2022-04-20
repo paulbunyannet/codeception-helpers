@@ -9,16 +9,16 @@
     }
   ],
   "require": {
-    "php": ">=7.4",
-    "cocur/slugify": "^4.0",
+    "php": "^8.0",
+    "cocur/slugify": "^4.1",
     "brandonwamboldt/utilphp": "^1.1",
-    "paulbunyannet/bandolier": "^1.7",
-    "fakerphp/faker": "1.12.0"
+    "paulbunyannet/bandolier": "^1.8",
+    "fakerphp/faker": "^1.19.0"
   },
   "require-dev": {
     "ext-json": "*",
     "ext-mysqli": "*",
-    "codeception/codeception": "2.*"
+    "codeception/codeception": "^5.0.0-RC2"
   },
   "autoload": {
     "psr-4": {
