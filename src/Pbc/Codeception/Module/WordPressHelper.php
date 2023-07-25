@@ -179,7 +179,9 @@ class WordPressHelper extends CodeceptionModule
             $I->runShellCommand($wpCommand);
             $attachmentId = trim($this->getModule('Cli')->output);
         }
-        $I->amOnPage("/$slug/");
+        $I->runShellCommand("bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path=". $wpPath ." post get ". $postID ." --field=url");
+        $url = trim($this->getModule('Cli')->output);
+        $I->amOnPage($url);
         return $postID;
     }
 
