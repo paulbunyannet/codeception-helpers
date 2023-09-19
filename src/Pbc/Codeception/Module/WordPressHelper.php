@@ -194,7 +194,6 @@ class WordPressHelper extends CodeceptionModule
      */
     public function createAPost($I, $title = null, $content = null, $adminPath='/wp-admin')
     {
-
         if (defined('WP_ADMIN_PATH')) {
             $adminPath = WP_ADMIN_PATH;
         }
@@ -213,18 +212,23 @@ class WordPressHelper extends CodeceptionModule
         }
 
         $I->amOnPage($adminPath . '/post-new.php');
-        // show the settings dialog link
-        $I->waitForElementVisible(['id' => 'show-settings-link']);
-        $I->click(['id' => 'show-settings-link']);
 
-        $I->scrollTo(['id' => 'title']);
-        $I->fillField(['id' => 'title'], $title);
-        $exist = Utilities::str_to_bool($I->executeJS("return !!document.getElementById('content-html')"));
-        if ($exist) {
-            $I->click(['id' => 'content-html']);
-        }
-        $I->click(['id' => 'content']);
-        $I->fillField(['id' => 'content'], $content);
+        // Get rid of Welcome Modal
+        $I->click('//*[@class="components-modal__content"]/div/button');
+
+        // Enable code editor
+        $I->waitForElementClickable(['class' => 'interface-more-menu-dropdown']);
+        $I->click(['class' => 'interface-more-menu-dropdown']);
+        $I->waitForElementVisible(['id' => 'components-menu-group-label-1']);
+        $I->click('//*[@id="editor"]/div/div[2]/div/div/div/div[2]/div[2]/button[2]/span[1]');
+
+        // Fill Title
+        $I->scrollTo(['class' => 'wp-block-post-title']);
+        $I->fillField(['class' => 'wp-block-post-title'], $title);
+
+        // Fill Content
+        $I->click(['class' => 'editor-post-text-editor']);
+        $I->fillField(['class' => 'editor-post-text-editor'], $content);
 
         // run though the meta field and set any extra fields that is contains
         if (isset($meta) && count($meta) > 0) {
@@ -245,6 +249,7 @@ class WordPressHelper extends CodeceptionModule
                         $customFields[$i][1]);
                 } catch (\Exception $ex) {
                     // make a new one if the above threw an exception
+                    $I->waitForElementClickable(['id' => 'enternew']);
                     $I->click(['id' => 'enternew']);
                     $I->fillField(['id' =>'metakeyinput'], $customFields[$i][0]);
                     $I->fillField(['id' =>'metavalue'], $customFields[$i][1]);
@@ -255,20 +260,25 @@ class WordPressHelper extends CodeceptionModule
 
         // add featured image if it's set
         if (isset($featured_image) && is_string($featured_image)) {
+            $I->click('//*[@id="editor"]/div/div[1]/div[1]/div[2]/div[3]/div/div[3]/div[4]/h2/button');
             $I->click('Set featured image');
 
-            $I->click('//*[@id="__attachments-view-45"]/li[@aria-label="'.$featured_image.'"]');
+            $I->click('//*[@id="__attachments-view-77"]/li[@aria-label="'.$featured_image.'"]');
             $I->click('#__wp-uploader-id-2 .media-button');
-            $I->waitForElementVisible(['id' => 'remove-post-thumbnail'], self::TEXT_WAIT_TIMEOUT);
+            $I->waitForElementVisible(['class' => 'editor-post-featured-image__preview']);
         }
 
-        $I->executeJS('window.scrollTo(0,0);');
-        $I->scrollTo(['id' => 'submitpost']);
+        $I->scrollTo(['class' => 'editor-post-publish-panel__toggle']);
 
-        $I->click(['id' => 'publish']);
-        $I->waitForText('Post published', self::TEXT_WAIT_TIMEOUT);
+        $I->click(['class' => 'editor-post-publish-panel__toggle']);
+
+        $I->waitForElementVisible(['class' => 'editor-post-publish-button']);
+        $I->click(['class' => 'editor-post-publish-button']);
+
+
+        $I->waitForText('Post published');
         $I->see('Post published');
-        $path = $I->executeJS('return document.querySelector("#sample-permalink > a").getAttribute("href")');
-        $I->amOnPage(parse_url($path, PHP_URL_PATH));
+
+        $I->click('//*[@id="editor"]/div/div[1]/div[1]/div[2]/div[4]/div[2]/div/div/div[2]/div/div[2]/div[2]/a[1]');
     }
 }
