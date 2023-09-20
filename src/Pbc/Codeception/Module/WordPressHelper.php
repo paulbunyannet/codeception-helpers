@@ -282,7 +282,10 @@ class WordPressHelper extends CodeceptionModule
         $I->click('//*[@id="editor"]/div/div[1]/div[1]/div[2]/div[4]/div[2]/div/div/div[2]/div/div[2]/div[2]/a[1]');
     }
 
-    public function enterTag(\AcceptanceTester|\FunctionalTester $I, string $tag)
+    /**
+     * @param \AcceptanceTester|\FunctionalTester   $I
+     */
+    public function enterTag($I, string $tag)
     {
         $I->click('//*[@id="editor"]/div/div[1]/div/div[2]/div[3]/div/div[3]/div[3]/h2/button');
         $I->fillField(['id' => 'components-form-token-input-0'], $tag);
@@ -290,7 +293,10 @@ class WordPressHelper extends CodeceptionModule
         $I->click(['id' => 'components-form-token-suggestions-0-0']);
     }
 
-    public function updatePost(\AcceptanceTester|\FunctionalTester $I)
+    /**
+     * @param \AcceptanceTester|\FunctionalTester   $I
+     */
+    public function updatePost($I)
     {
         $I->scrollTo(['class' => 'editor-post-publish-button']);
         $I->click(['class' => 'editor-post-publish-button']);
