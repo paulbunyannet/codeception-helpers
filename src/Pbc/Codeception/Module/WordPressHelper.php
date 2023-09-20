@@ -5,7 +5,6 @@ use Cocur\Slugify\Slugify;
 use Codeception\Module as CodeceptionModule;
 use Faker\Factory;
 use Pbc\Bandolier\Type\Arrays as BandolierArrays;
-use utilphp\util as Utilities;
 
 
 /**
@@ -81,7 +80,7 @@ class WordPressHelper extends CodeceptionModule
         }
 
         $I->amOnPage($loginPath . '?loggedout=true');
-        $I->waitForText('You are now logged out.');
+        $I->waitForText('You are now logged out.', self::TEXT_WAIT_TIMEOUT);
     }
 
     /**
@@ -92,12 +91,12 @@ class WordPressHelper extends CodeceptionModule
      */
     private function fillLoginAndWaitForDashboard($I, $user = "admin", $pass = "password")
     {
-        $I->waitForJs('return document.readyState == "complete"', $this::TEXT_WAIT_TIMEOUT);
+        $I->waitForJs('return document.readyState == "complete"', self::TEXT_WAIT_TIMEOUT);
         $I->fillField(['id' => 'user_login'], $user);
         $I->fillField(['id' => 'user_pass'], $pass);
         $I->checkOption("#rememberme");
         $I->click(['id' => 'wp-submit']);
-        $I->waitForElementNotVisible("#rememberme", $this::TEXT_WAIT_TIMEOUT * 2);
+        $I->waitForElementNotVisible("#rememberme", self::TEXT_WAIT_TIMEOUT * 2);
     }
 
     /**
@@ -217,9 +216,9 @@ class WordPressHelper extends CodeceptionModule
         $I->click('//*[@class="components-modal__content"]/div/button');
 
         // Enable code editor
-        $I->waitForElementClickable(['class' => 'interface-more-menu-dropdown']);
+        $I->waitForElementClickable(['class' => 'interface-more-menu-dropdown'], self::TEXT_WAIT_TIMEOUT);
         $I->click(['class' => 'interface-more-menu-dropdown']);
-        $I->waitForElementVisible(['id' => 'components-menu-group-label-1']);
+        $I->waitForElementVisible(['id' => 'components-menu-group-label-1'], self::TEXT_WAIT_TIMEOUT);
         $I->click('//*[@id="editor"]/div/div[2]/div/div/div/div[2]/div[2]/button[2]/span[1]');
 
         // Fill Title
@@ -249,7 +248,7 @@ class WordPressHelper extends CodeceptionModule
                         $customFields[$i][1]);
                 } catch (\Exception $ex) {
                     // make a new one if the above threw an exception
-                    $I->waitForElementClickable(['id' => 'enternew']);
+                    $I->waitForElementClickable(['id' => 'enternew'], self::TEXT_WAIT_TIMEOUT);
                     $I->click(['id' => 'enternew']);
                     $I->fillField(['id' =>'metakeyinput'], $customFields[$i][0]);
                     $I->fillField(['id' =>'metavalue'], $customFields[$i][1]);
@@ -265,18 +264,18 @@ class WordPressHelper extends CodeceptionModule
 
             $I->click('//*[@id="__attachments-view-77"]/li[@aria-label="'.$featured_image.'"]');
             $I->click('#__wp-uploader-id-2 .media-button');
-            $I->waitForElementVisible(['class' => 'editor-post-featured-image__preview']);
+            $I->waitForElementVisible(['class' => 'editor-post-featured-image__preview'], self::TEXT_WAIT_TIMEOUT);
         }
 
         $I->scrollTo(['class' => 'editor-post-publish-panel__toggle']);
 
         $I->click(['class' => 'editor-post-publish-panel__toggle']);
 
-        $I->waitForElementVisible(['class' => 'editor-post-publish-button']);
+        $I->waitForElementVisible(['class' => 'editor-post-publish-button'], self::TEXT_WAIT_TIMEOUT);
         $I->click(['class' => 'editor-post-publish-button']);
 
 
-        $I->waitForText('Post published');
+        $I->waitForText('Post published', self::TEXT_WAIT_TIMEOUT);
         $I->see('Post published');
 
         $I->click('//*[@id="editor"]/div/div[1]/div[1]/div[2]/div[4]/div[2]/div/div/div[2]/div/div[2]/div[2]/a[1]');
@@ -289,7 +288,7 @@ class WordPressHelper extends CodeceptionModule
     {
         $I->click('//*[@id="editor"]/div/div[1]/div/div[2]/div[3]/div/div[3]/div[3]/h2/button');
         $I->fillField(['id' => 'components-form-token-input-0'], $tag);
-        $I->waitForElementVisible(['id' => 'components-form-token-suggestions-0-0']);
+        $I->waitForElementVisible(['id' => 'components-form-token-suggestions-0-0'], self::TEXT_WAIT_TIMEOUT);
         $I->click(['id' => 'components-form-token-suggestions-0-0']);
     }
 
@@ -300,6 +299,6 @@ class WordPressHelper extends CodeceptionModule
     {
         $I->scrollTo(['class' => 'editor-post-publish-button']);
         $I->click(['class' => 'editor-post-publish-button']);
-        $I->waitForText('Post updated');
+        $I->waitForText('Post updated', self::TEXT_WAIT_TIMEOUT);
     }
 }
