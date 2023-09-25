@@ -5,6 +5,7 @@ use Cocur\Slugify\Slugify;
 use Codeception\Module as CodeceptionModule;
 use Faker\Factory;
 use Pbc\Bandolier\Type\Arrays as BandolierArrays;
+use Codeception\Exception\ElementNotFound;
 
 
 /**
@@ -213,7 +214,9 @@ class WordPressHelper extends CodeceptionModule
         $I->amOnPage($adminPath . '/post-new.php');
 
         // Get rid of Welcome Modal
-        $I->click('//*[@class="components-modal__content"]/div/button');
+        try {
+            $I->click('//*[@class="components-modal__content"]/div/button');
+        } catch (ElementNotFound $elementNotFound){}
 
         // Enable code editor
         $I->waitForElementClickable(['class' => 'interface-more-menu-dropdown'], self::TEXT_WAIT_TIMEOUT);
