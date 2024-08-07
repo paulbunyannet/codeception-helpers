@@ -179,9 +179,9 @@ class WordPressHelper extends CodeceptionModule
             $I->runShellCommand($wpCommand);
             $attachmentId = trim($this->getModule('Cli')->output);
         }
-        $I->runShellCommand("bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path=". $wpPath ." post get ". $postID ." --field=url");
-        $url = trim($this->getModule('Cli')->output);
-        $I->amOnPage($url);
+        $guid = $I->grabRowFromDb("SELECT guid FROM wp_posts ORDER BY ID DESC LIMIT 0, 1");
+        $I->amOnPage(parse_url($guid['guid'], PHP_URL_PATH));
+        $I->wait(2);
         return $postID;
     }
 
