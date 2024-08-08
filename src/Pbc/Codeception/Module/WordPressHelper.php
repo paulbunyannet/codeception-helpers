@@ -174,12 +174,12 @@ class WordPressHelper extends CodeceptionModule
         }
         $I->runShellCommand($wpCommand);
         $postID = trim($this->getModule('Cli')->output);
+        $guid = $I->grabRowFromDb("SELECT guid FROM wp_posts ORDER BY ID DESC LIMIT 0, 1");
         if (isset($featured_image) && is_string($featured_image) && $postID) {
             $wpCommand = 'bin/wp --allow-root --skip-packages --skip-plugins --skip-themes --path='. $wpPath .' media import tests/Support/Data/'. $featured_image . ' --porcelain --featured_image --post_id=' . $postID;
             $I->runShellCommand($wpCommand);
             $attachmentId = trim($this->getModule('Cli')->output);
         }
-        $guid = $I->grabRowFromDb("SELECT guid FROM wp_posts ORDER BY ID DESC LIMIT 0, 1");
         $I->amOnPage(parse_url($guid['guid'], PHP_URL_PATH));
         $I->wait(2);
         return $postID;
