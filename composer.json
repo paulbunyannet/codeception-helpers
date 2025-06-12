@@ -12,7 +12,7 @@
     "php": "^8.0",
     "cocur/slugify": "^4.3",
     "brandonwamboldt/utilphp": "^1.1",
-    "paulbunyannet/bandolier": "^1.8",
+    "paulbunyannet/bandolier": ">=1.8",
     "fakerphp/faker": "^1.21.0"
   },
   "require-dev": {
