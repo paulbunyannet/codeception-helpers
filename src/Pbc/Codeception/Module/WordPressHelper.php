@@ -5,7 +5,7 @@ use Cocur\Slugify\Slugify;
 use Codeception\Module as CodeceptionModule;
 use Faker\Factory;
 use Pbc\Bandolier\Type\Arrays as BandolierArrays;
-use utilphp\util as Utilities;
+use Pbc\Codeception\Helpers\Util as Utilities;
 
 
 /**
