@@ -54,7 +54,7 @@ class DatabaseHelper extends CodeceptionModule
         if ($dropTables) {
             $this->dropTables($config);
         }
-        $I->runShellCommand('mysql -h ' . $config['server'] . ' -u ' . $config['user'] . ' -p\'' . $config['password'] . '\' ' . $config['database'] . ' < ' . $config['dump']);
+        $I->runShellCommand('mariadb --skip-ssl -h ' . $config['server'] . ' -u ' . $config['user'] . ' -p\'' . $config['password'] . '\' ' . $config['database'] . ' < ' . $config['dump']);
     }
 
     /**
@@ -133,7 +133,7 @@ class DatabaseHelper extends CodeceptionModule
     {
         $queryFile = __DIR__ . '/' . md5($query) . '.sql';
         file_put_contents($queryFile, $query);
-        $I->runShellCommand('mysql -h ' . $config['server'] . ' -u ' . $config['user'] . ' -p\'' . $config['password'] . '\' ' . $config['database'] . ' < ' . $queryFile);
+        $I->runShellCommand('mariadb --skip-ssl -h ' . $config['server'] . ' -u ' . $config['user'] . ' -p\'' . $config['password'] . '\' ' . $config['database'] . ' < ' . $queryFile);
         unlink($queryFile);
     }
 
